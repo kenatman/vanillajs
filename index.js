@@ -21,3 +21,9 @@ const nicoInfo = {
 };
 
 console.log(nicoInfo.favFood[1].name);
+
+function sayHello(name, age) {
+  console.log("Hi my name is", name, "Years of", age);
+}
+
+sayHello("Yunsu", 32);
