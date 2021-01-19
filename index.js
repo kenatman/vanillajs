@@ -1,5 +1,3 @@
-alert("I am JS. I am beuatiful.");
-
 const a = 100;
 let b = a - 5;
 
@@ -23,7 +21,33 @@ const nicoInfo = {
 console.log(nicoInfo.favFood[1].name);
 
 function sayHello(name, age) {
-  console.log("Hi my name is", name, "Years of", age);
+  return `Hi my name is ${name}  Years of ${age}`;
 }
 
-sayHello("Yunsu", 32);
+const ys = sayHello("Yunsu", 32);
+console.log(ys);
+
+const calculator = {
+  plus: function (a, b) {
+    return a + b;
+  },
+  minus: function (a, b) {
+    return a - b;
+  },
+  times: function (a, b) {
+    return a * b;
+  },
+  divide: function (a, b) {
+    return a / b;
+  },
+};
+
+const plus = calculator.plus(3, 7);
+const minus = calculator.minus(3, 7);
+const times = calculator.times(3, 7);
+const divide = calculator.divide(3, 7);
+
+console.log(plus);
+console.log(minus);
+console.log(times);
+console.log(divide);
