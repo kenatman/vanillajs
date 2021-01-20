@@ -1,5 +1,9 @@
-function handleResize() {
-  console.log("I have been resized");
-}
+const age = prompt("How old are you???");
 
-window.addEventListener("resize", handleResize);
+if (age <= 19) {
+  console.log("Go home");
+} else if (age > 19 && age < 30) {
+  console.log("Enjoy");
+} else {
+  console.log("Too old");
+}
