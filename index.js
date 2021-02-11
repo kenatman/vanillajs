@@ -1,35 +1,25 @@
-// <⚠️ DONT DELETE THIS ⚠️>
+const body = document.querySelector("body");
+const span = document.createElement("span");
+body.appendChild(span);
+span.innerText = `Hello!!`;
+span.style.color = "white";
 
-const colors = ["#1abc9c", "#3498db", "#9b59b6", "#f39c12", "#e74c3c"];
-// <⚠️ /DONT DELETE THIS ⚠️>
+if (window.innerWidth <= 500) {
+  body.style.backgroundColor = "#2e8cd5";
+} else if (window.innerWidth > 500 && window.innerWidth < 800) {
+  body.style.backgroundColor = "#904ead";
+} else {
+  body.style.backgroundColor = "#eebc30";
+}
 
-/*
-✅ The text of the title should change when the mouse is on top of it.
-✅ The text of the title should change when the mouse is leaves it.
-✅ When the window is resized the title should change.
-✅ On right click the title should also change.
-✅ The colors of the title should come from a color from the colors array.
-✅ DO NOT CHANGE .css, or .html files.
-✅ ALL function handlers should be INSIDE of "superEventHandler"
-*/
+function supersuper() {
+  if (window.innerWidth <= 500) {
+    body.style.backgroundColor = "#2e8cd5";
+  } else if (window.innerWidth > 500 && window.innerWidth < 800) {
+    body.style.backgroundColor = "#904ead";
+  } else {
+    body.style.backgroundColor = "#eebc30";
+  }
+}
 
-const h2 = document.querySelector("h2");
-
-const superEventHandler = {
-  mouseOn: () => {
-    (h2.innerText = `Your mouse is here!`), (h2.style.color = colors[0]);
-  },
-  mouseLeave: () => {
-    (h2.innerText = `Your mouse is gone!!!`), (h2.style.color = colors[1]);
-  },
-  resize: () => {
-    (h2.innerText = `You just resized`), (h2.style.color = colors[2]);
-  },
-  CM: () => {
-    (h2.innerText = `This is a right click`), (h2.style.color = colors[4]);
-  },
-};
-h2.addEventListener("mouseenter", superEventHandler.mouseOn);
-h2.addEventListener("mouseleave", superEventHandler.mouseLeave);
-window.addEventListener("resize", superEventHandler.resize);
-window.addEventListener("contextmenu", superEventHandler.CM);
+window.addEventListener("resize", supersuper);
