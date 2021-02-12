@@ -2,26 +2,23 @@
 
 const h2 = document.querySelector("h2");
 
-const second = 1000;
-const minute = second * 60;
-const hour = minute * 60;
-const day = hour * 24;
-
 function getTime() {
-  // Don't delete this.
-  const xmasDay = new Date("2021-12-24:00:00:00+0900");
+  const xmasDay = new Date(`${new Date().getFullYear()}-12-24:00:00:00+0900`);
   const now = new Date();
-  const gap = xmasDay.getTime() - now.getTime();
-
-  const days = Math.ceil(gap / day);
-  const hours = Math.ceil((gap % day) / hour);
-  const minutes = Math.ceil((gap % hour) / minute);
-  const seconds = Math.ceil((gap % minute) / second);
-  h2.innerText = `${days < 10 ? `0${days}` : days}d  ${
-    hours < 10 ? `0${hours}` : hours
-  }h  ${minutes < 10 ? `0${minutes}` : minutes}m  ${
-    seconds < 10 ? `0${seconds}` : seconds
-  }s`;
+  // This is in milisecondsx
+  const difference = new Date(xmasDay - now);
+  const secondsInMs = Math.floor(difference / 1000);
+  const minutesInMs = Math.floor(secondsInMs / 60);
+  const hoursInMs = Math.floor(minutesInMs / 60);
+  const days = Math.floor(hoursInMs / 24);
+  const seconds = secondsInMs % 60;
+  const minutes = minutesInMs % 60;
+  const hours = hoursInMs % 24;
+  const daysStr = `${days < 10 ? `0${days}` : days}d`;
+  const hoursStr = `${hours < 10 ? `0${hours}` : hours}h`;
+  const minutesStr = `${minutes < 10 ? `0${minutes}` : minutes}m `;
+  const secondsStr = `${seconds < 10 ? `0${seconds}` : seconds}s`;
+  h2.innerHTML = `${daysStr} ${hoursStr} ${minutesStr} ${secondsStr}`;
 }
 
 function init() {
