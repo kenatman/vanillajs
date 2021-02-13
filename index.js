@@ -2,11 +2,12 @@ const select = document.querySelector(".js-select");
 
 const COUNTRY = "country";
 let currentCT = localStorage.getItem(COUNTRY);
+const options = select.querySelectorAll("option");
 
-const option1 = document.querySelector("select option[value=KR]");
-const option2 = document.querySelector("select option[value=GR]");
-const option3 = document.querySelector("select option[value=TK]");
-const option4 = document.querySelector("select option[value=FL]");
+const option1 = options[1];
+const option2 = options[2];
+const option3 = options[3];
+const option4 = options[4];
 
 function saveCountry(event) {
   const savedValue = event.target.value;
