@@ -1,28 +1,29 @@
-// You're gonna need this
+const select = document.querySelector(".js-select");
 
-const h2 = document.querySelector("h2");
+const COUNTRY = "country";
+let currentCT = localStorage.getItem(COUNTRY);
 
-function getTime() {
-  const xmasDay = new Date(`${new Date().getFullYear()}-12-24:00:00:00+0900`);
-  const now = new Date();
-  // This is in milisecondsx
-  const difference = new Date(xmasDay - now);
-  const secondsInMs = Math.floor(difference / 1000);
-  const minutesInMs = Math.floor(secondsInMs / 60);
-  const hoursInMs = Math.floor(minutesInMs / 60);
-  const days = Math.floor(hoursInMs / 24);
-  const seconds = secondsInMs % 60;
-  const minutes = minutesInMs % 60;
-  const hours = hoursInMs % 24;
-  const daysStr = `${days < 10 ? `0${days}` : days}d`;
-  const hoursStr = `${hours < 10 ? `0${hours}` : hours}h`;
-  const minutesStr = `${minutes < 10 ? `0${minutes}` : minutes}m `;
-  const secondsStr = `${seconds < 10 ? `0${seconds}` : seconds}s`;
-  h2.innerHTML = `${daysStr} ${hoursStr} ${minutesStr} ${secondsStr}`;
+const option1 = document.querySelector("select option[value=KR]");
+const option2 = document.querySelector("select option[value=GR]");
+const option3 = document.querySelector("select option[value=TK]");
+const option4 = document.querySelector("select option[value=FL]");
+
+function saveCountry(event) {
+  const savedValue = event.target.value;
+
+  localStorage.setItem(COUNTRY, savedValue);
 }
 
-function init() {
-  getTime();
-  setInterval(getTime, 1000);
+select.addEventListener("change", saveCountry);
+
+if (currentCT !== null) {
+  if (option1.value === currentCT) {
+    option1.setAttribute("selected", "");
+  } else if (option2.value === currentCT) {
+    option2.setAttribute("selected", "");
+  } else if (option3.value === currentCT) {
+    option3.setAttribute("selected", "");
+  } else if (option4.value === currentCT) {
+    option4.setAttribute("selected", "");
+  }
 }
-init();
