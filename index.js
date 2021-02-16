@@ -1,150 +1,145 @@
-const form = document.querySelector(".js-form");
-const input = form.querySelector("input");
-const pendingUL = document.querySelector(".js-pending");
-const finishedUL = document.querySelector(".js-finished");
+const pendingList = document.getElementById("js-pending"),
+  finishedList = document.getElementById("js-finished"),
+  form = document.getElementById("js-form"),
+  input = form.querySelector("input");
 
-const PENDING = "pending";
-const FINISHED = "finished";
+const PENDING = "PENDING";
+const FINISHED = "FINISHED";
 
-let pending = [];
-let finished = [];
+let pendingTasks, finishedTasks;
 
-function deletePending(event) {
-  const btn = event.target;
-  const li = btn.parentNode;
-  pendingUL.removeChild(li);
-  const cleanPending = pending.filter((sth) => sth.id !== parseInt(li.id));
-  pending = cleanPending;
-  savePending();
+function getTaskObject(text) {
+  return {
+    id: String(Date.now()),
+    text,
+  };
 }
 
-function deleteFinished(event) {
-  const btn = event.target;
-  const li = btn.parentNode;
-  finishedUL.removeChild(li);
-  const cleanFinished = finished.filter((sth) => sth.id !== parseInt(li.id));
-  finished = cleanFinished;
-  saveFinished();
+function savePendingTask(task) {
+  pendingTasks.push(task);
 }
 
-function movePending(event) {
-  const btn = event.target;
-  const li = btn.parentNode;
-
-  pendingUL.removeChild(li);
-  const cleanPending = pending.filter((sth) => sth.id !== parseInt(li.id));
-  pending = cleanPending;
-  savePending();
-
-  finishedUL.appendChild(li);
-  const finishedObj = { text: li.firstChild.innerText, id: li.id };
-  finished.push(finishedObj);
-  saveFinished();
+function findInFinished(taskId) {
+  return finishedTasks.find(function (task) {
+    return task.id === taskId;
+  });
 }
 
-function moveFinished(event) {
-  const btn = event.target;
-  const li = btn.parentNode;
-
-  finishedUL.removeChild(li);
-  const cleanFinished = finished.filter((sth) => sth.id !== parseInt(li.id));
-  finished = cleanFinished;
-  saveFinished();
-
-  pendingUL.appendChild(li);
-  const pendingObj = { text: li.firstChild.innerText, id: li.id };
-  pending.push(pendingObj);
-  savePending();
+function findInPending(taskId) {
+  return pendingTasks.find(function (task) {
+    return task.id === taskId;
+  });
 }
 
-function savePending() {
-  localStorage.setItem(PENDING, JSON.stringify(pending));
+function removeFromPending(taskId) {
+  pendingTasks = pendingTasks.filter(function (task) {
+    return task.id !== taskId;
+  });
 }
 
-function saveFinished() {
-  localStorage.setItem(FINISHED, JSON.stringify(finished));
+function removeFromFinished(taskId) {
+  finishedTasks = finishedTasks.filter(function (task) {
+    return task.id !== taskId;
+  });
 }
 
-function paintPending(text) {
+function addToFinished(task) {
+  finishedTasks.push(task);
+}
+
+function addToPending(task) {
+  pendingTasks.push(task);
+}
+
+function deleteTask(e) {
+  const li = e.target.parentNode;
+  li.parentNode.removeChild(li);
+  removeFromFinished(li.id);
+  removeFromPending(li.id);
+  saveState();
+}
+
+function handleFinishClick(e) {
+  const li = e.target.parentNode;
+  li.parentNode.removeChild(li);
+  const task = findInPending(li.id);
+  removeFromPending(li.id);
+  addToFinished(task);
+  paintFinishedTask(task);
+  saveState();
+}
+
+function handleBackClick(e) {
+  const li = e.target.parentNode;
+  li.parentNode.removeChild(li);
+  const task = findInFinished(li.id);
+  removeFromFinished(li.id);
+  addToPending(task);
+  paintPendingTask(task);
+  saveState();
+}
+
+function buildGenericLi(task) {
   const li = document.createElement("li");
-  const delBtn = document.createElement("btn");
-  const moveBtn = document.createElement("btn");
-
   const span = document.createElement("span");
-
-  const newID = pending.length + 1;
-
-  span.innerText = text;
-  delBtn.innerText = "❌";
-  delBtn.addEventListener("click", deletePending);
-  moveBtn.innerText = "🌟";
-  moveBtn.addEventListener("click", movePending);
-
-  li.appendChild(span);
-  li.appendChild(delBtn);
-  li.appendChild(moveBtn);
-  li.id = newID;
-  pendingUL.appendChild(li);
-
-  const pendingObj = { text: text, id: newID };
-  pending.push(pendingObj);
-  savePending();
+  const deleteBtn = document.createElement("button");
+  span.innerText = task.text;
+  deleteBtn.innerText = "❌";
+  deleteBtn.addEventListener("click", deleteTask);
+  li.append(span, deleteBtn);
+  li.id = task.id;
+  return li;
 }
 
-function paintFinished(text) {
-  const li = document.createElement("li");
-  const delBtn = document.createElement("btn");
-  const moveBtn = document.createElement("btn");
-
-  const span = document.createElement("span");
-
-  const newID = finished.length + 1;
-
-  span.innerText = text;
-  delBtn.innerText = "❌";
-  delBtn.addEventListener("click", deleteFinished);
-  moveBtn.innerText = "🌟";
-  moveBtn.addEventListener("click", moveFinished);
-
-  li.appendChild(span);
-  li.appendChild(delBtn);
-  li.appendChild(moveBtn);
-  li.id = newID;
-  finishedUL.appendChild(li);
-
-  const finishedObj = { text: text, id: newID };
-  finished.push(finishedObj);
-  saveFinished();
+function paintPendingTask(task) {
+  const genericLi = buildGenericLi(task);
+  const completeBtn = document.createElement("button");
+  completeBtn.innerText = "✅";
+  completeBtn.addEventListener("click", handleFinishClick);
+  genericLi.append(completeBtn);
+  pendingList.append(genericLi);
 }
 
-function loadPending() {
-  const loadedPending = localStorage.getItem(PENDING);
-  if (loadedPending !== null) {
-    const parsedPending = JSON.parse(loadedPending);
-    parsedPending.forEach((sth) => paintPending(sth.text));
-  }
+function paintFinishedTask(task) {
+  const genericLi = buildGenericLi(task);
+  const backBtn = document.createElement("button");
+  backBtn.innerText = "⏪";
+  backBtn.addEventListener("click", handleBackClick);
+  genericLi.append(backBtn);
+  finishedList.append(genericLi);
 }
 
-function loadFinished() {
-  const loadedFinished = localStorage.getItem(FINISHED);
-  if (loadedFinished !== null) {
-    const parsedFinished = JSON.parse(loadedFinished);
-    parsedFinished.forEach((sth) => paintFinished(sth.text));
-  }
+function saveState() {
+  localStorage.setItem(PENDING, JSON.stringify(pendingTasks));
+  localStorage.setItem(FINISHED, JSON.stringify(finishedTasks));
 }
 
-function handleSubmit(event) {
-  event.preventDefault();
-  const currentValue = input.value;
-  paintPending(currentValue);
+function loadState() {
+  pendingTasks = JSON.parse(localStorage.getItem(PENDING)) || [];
+  finishedTasks = JSON.parse(localStorage.getItem(FINISHED)) || [];
+}
+
+function restoreState() {
+  pendingTasks.forEach(function (task) {
+    paintPendingTask(task);
+  });
+  finishedTasks.forEach(function (task) {
+    paintFinishedTask(task);
+  });
+}
+
+function handleFormSubmit(e) {
+  e.preventDefault();
+  const taskObj = getTaskObject(input.value);
   input.value = "";
+  paintPendingTask(taskObj);
+  savePendingTask(taskObj);
+  saveState();
 }
 
 function init() {
-  loadPending();
-  loadFinished();
-
-  form.addEventListener("submit", handleSubmit);
+  form.addEventListener("submit", handleFormSubmit);
+  loadState();
+  restoreState();
 }
-
 init();
