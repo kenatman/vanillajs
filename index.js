@@ -1,145 +1,33 @@
-const pendingList = document.getElementById("js-pending"),
-  finishedList = document.getElementById("js-finished"),
-  form = document.getElementById("js-form"),
-  input = form.querySelector("input");
+const form = document.querySelector(".js-form"),
+  rangeInput = form.querySelector(".range-input"),
+  numberInput = form.querySelector(".number-input"),
+  explain = document.querySelector(".explain"),
+  result = document.querySelector(".result");
 
-const PENDING = "PENDING";
-const FINISHED = "FINISHED";
+const title = document.querySelector(".title");
 
-let pendingTasks, finishedTasks;
+const button = form.querySelector(".button");
 
-function getTaskObject(text) {
-  return {
-    id: String(Date.now()),
-    text,
-  };
+function paintTitle(e) {
+  const currentValue = e.target.value;
+  title.innerText = `Generate a number between 0 and ${currentValue}`;
 }
 
-function savePendingTask(task) {
-  pendingTasks.push(task);
-}
+rangeInput.addEventListener("input", paintTitle);
 
-function findInFinished(taskId) {
-  return finishedTasks.find(function (task) {
-    return task.id === taskId;
-  });
-}
-
-function findInPending(taskId) {
-  return pendingTasks.find(function (task) {
-    return task.id === taskId;
-  });
-}
-
-function removeFromPending(taskId) {
-  pendingTasks = pendingTasks.filter(function (task) {
-    return task.id !== taskId;
-  });
-}
-
-function removeFromFinished(taskId) {
-  finishedTasks = finishedTasks.filter(function (task) {
-    return task.id !== taskId;
-  });
-}
-
-function addToFinished(task) {
-  finishedTasks.push(task);
-}
-
-function addToPending(task) {
-  pendingTasks.push(task);
-}
-
-function deleteTask(e) {
-  const li = e.target.parentNode;
-  li.parentNode.removeChild(li);
-  removeFromFinished(li.id);
-  removeFromPending(li.id);
-  saveState();
-}
-
-function handleFinishClick(e) {
-  const li = e.target.parentNode;
-  li.parentNode.removeChild(li);
-  const task = findInPending(li.id);
-  removeFromPending(li.id);
-  addToFinished(task);
-  paintFinishedTask(task);
-  saveState();
-}
-
-function handleBackClick(e) {
-  const li = e.target.parentNode;
-  li.parentNode.removeChild(li);
-  const task = findInFinished(li.id);
-  removeFromFinished(li.id);
-  addToPending(task);
-  paintPendingTask(task);
-  saveState();
-}
-
-function buildGenericLi(task) {
-  const li = document.createElement("li");
-  const span = document.createElement("span");
-  const deleteBtn = document.createElement("button");
-  span.innerText = task.text;
-  deleteBtn.innerText = "❌";
-  deleteBtn.addEventListener("click", deleteTask);
-  li.append(span, deleteBtn);
-  li.id = task.id;
-  return li;
-}
-
-function paintPendingTask(task) {
-  const genericLi = buildGenericLi(task);
-  const completeBtn = document.createElement("button");
-  completeBtn.innerText = "✅";
-  completeBtn.addEventListener("click", handleFinishClick);
-  genericLi.append(completeBtn);
-  pendingList.append(genericLi);
-}
-
-function paintFinishedTask(task) {
-  const genericLi = buildGenericLi(task);
-  const backBtn = document.createElement("button");
-  backBtn.innerText = "⏪";
-  backBtn.addEventListener("click", handleBackClick);
-  genericLi.append(backBtn);
-  finishedList.append(genericLi);
-}
-
-function saveState() {
-  localStorage.setItem(PENDING, JSON.stringify(pendingTasks));
-  localStorage.setItem(FINISHED, JSON.stringify(finishedTasks));
-}
-
-function loadState() {
-  pendingTasks = JSON.parse(localStorage.getItem(PENDING)) || [];
-  finishedTasks = JSON.parse(localStorage.getItem(FINISHED)) || [];
-}
-
-function restoreState() {
-  pendingTasks.forEach(function (task) {
-    paintPendingTask(task);
-  });
-  finishedTasks.forEach(function (task) {
-    paintFinishedTask(task);
-  });
-}
-
-function handleFormSubmit(e) {
+function paintExplain(e) {
   e.preventDefault();
-  const taskObj = getTaskObject(input.value);
-  input.value = "";
-  paintPendingTask(taskObj);
-  savePendingTask(taskObj);
-  saveState();
+  const randomNumber = Math.floor(Math.random() * parseInt(rangeInput.value));
+  const selectNumber = parseInt(numberInput.value);
+
+  if (selectNumber !== NaN) {
+    explain.innerText = `You chose "${selectNumber}", the machine chose "${randomNumber}"`;
+  }
+  if (selectNumber === randomNumber) {
+    result.innerText = `YOU WIN!!!`;
+  } else {
+    result.innerText = `you lose~`;
+  }
 }
 
-function init() {
-  form.addEventListener("submit", handleFormSubmit);
-  loadState();
-  restoreState();
-}
-init();
+button.addEventListener("click", paintExplain);

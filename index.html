@@ -6,22 +6,17 @@
   </head>
 
   <body>
-    <h1>Tasks</h1>
+    <h1>Random Number Game</h1>
+    <h2 class="title">Generate a number between 0 and X</h2>
+    <form class="js-form">
+      <input class="range-input" type="range" min="1" max="130" step="1" />
 
-    <form id="js-form">
-      <input type="text" placeholder="Add task" />
+      <h3>Guess the number</h3>
+      <input required type="number" class="number-input" />
+      <button class="button">play!!</button>
     </form>
-
-    <div>
-      <h3>Pending</h3>
-      <ul id="js-pending"></ul>
-    </div>
-
-    <div>
-      <h3>Finished</h3>
-      <ul id="js-finished"></ul>
-    </div>
-
+    <p class="explain"></p>
+    <span class="result"></span>
     <script src="index.js"></script>
   </body>
 </html>
