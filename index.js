@@ -17,16 +17,18 @@ rangeInput.addEventListener("input", paintTitle);
 
 function paintExplain(e) {
   e.preventDefault();
-  const randomNumber = Math.floor(Math.random() * parseInt(rangeInput.value));
-  const selectNumber = parseInt(numberInput.value);
+  const randomNumber = Math.floor(
+    Math.random() * parseInt(rangeInput.value, 10)
+  );
+  const selectNumber = parseInt(numberInput.value, 10);
 
-  if (selectNumber !== NaN) {
+  if (selectNumber !== isNaN) {
     explain.innerText = `You chose "${selectNumber}", the machine chose "${randomNumber}"`;
   }
   if (selectNumber === randomNumber) {
     result.innerText = `YOU WIN!!!`;
   } else {
-    result.innerText = `you lose~`;
+    result.innerText = `you lose;;`;
   }
 }
 
