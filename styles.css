@@ -1,3 +1,38 @@
 body {
   font-family: sans-serif;
+  background-color: black;
 }
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 5px;
+}
+
+.screen {
+  grid-area: 1/1/2/4;
+  height: 70px;
+  font-size: 50px;
+  color: white;
+  background-color: black;
+  border: none;
+  text-align: end;
+  padding-right:10px;
+}
+
+button {
+  height: 80px;
+  background-color: #3f3a33;
+  color: white;
+  font-size: 20px;
+}
+
+.zero {
+  grid-area: 5/1/6/3;
+}
+
+.color {
+  background-color: #f28d31;
+}
+
+.clear{background-color: :#ffffff;}
