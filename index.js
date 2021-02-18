@@ -1,35 +1,29 @@
-const form = document.querySelector(".js-form"),
-  rangeInput = form.querySelector(".range-input"),
-  numberInput = form.querySelector(".number-input"),
-  explain = document.querySelector(".explain"),
-  result = document.querySelector(".result");
+const range = document.getElementById("js-range");
+const title = document.querySelector(".js-title");
+const guessForm = document.getElementById("js-guess");
+const result = document.getElementById("js-result");
 
-const title = document.querySelector(".title");
-
-const button = form.querySelector(".button");
-
-function paintTitle(e) {
-  const currentValue = e.target.value;
-  title.innerText = `Generate a number between 0 and ${currentValue}`;
+function handleRangeChange(e) {
+  const selectedRange = title.querySelector("span");
+  selectedRange.innerHTML = range.value;
 }
 
-rangeInput.addEventListener("input", paintTitle);
-
-function paintExplain(e) {
+function handleGuessSubmit(e) {
   e.preventDefault();
-  const randomNumber = Math.floor(
-    Math.random() * parseInt(rangeInput.value, 10)
-  );
-  const selectNumber = parseInt(numberInput.value, 10);
-
-  if (selectNumber !== isNaN) {
-    explain.innerText = `You chose "${selectNumber}", the machine chose "${randomNumber}"`;
+  const guessInput = guessForm.querySelector("input");
+  if (guessInput.value === "") {
+    return;
   }
-  if (selectNumber === randomNumber) {
-    result.innerText = `YOU WIN!!!`;
-  } else {
-    result.innerText = `you lose;;`;
-  }
+  const max = range.value;
+  const random = Math.ceil(Math.random() * max);
+  const userGuess = parseInt(guessInput.value, 10);
+  const resultSpan = result.querySelector("span");
+  resultSpan.innerHTML = `
+  You chose: ${userGuess},
+  the machine chose: ${random}.<br />
+  <strong>${userGuess === random ? "You won!" : "You lost!"}</strong>
+  `;
 }
 
-button.addEventListener("click", paintExplain);
+guessForm.addEventListener("submit", handleGuessSubmit);
+range.addEventListener("input", handleRangeChange);
