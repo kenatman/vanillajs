@@ -1,96 +1,83 @@
-const calculator = {
-  displayValue: "0",
-  firstOperand: null,
-  waitingForSecondOperand: false,
-  operator: null,
-};
+const result = document.querySelector(".js-result");
+const reset = document.querySelector(".js-reset");
+const equals = document.querySelector(".js-equals");
+const numbers = Array.from(document.querySelectorAll(".js-number"));
+const operations = Array.from(document.querySelectorAll(".js-operation"));
 
-const container = document.querySelector(".container");
+let firstValue = "",
+  firstDone,
+  secondValue = "",
+  secondDone,
+  currentOperation;
 
-function inputNumber(number) {
-  const displayValue = calculator.displayValue;
-  const waitingForSecondOperand = calculator.waitingForSecondOperand;
-  if (waitingForSecondOperand === true) {
-    calculator.displayValue = number;
-    calculator.waitingForSecondOperand = false;
+function doOperation() {
+  const intValueA = parseInt(firstValue, 10);
+  const intValueB = parseInt(secondValue, 10);
+  switch (currentOperation) {
+    case "+":
+      return intValueA + intValueB;
+    case "-":
+      return intValueA - intValueB;
+    case "/":
+      return intValueA / intValueB;
+    case "*":
+      return intValueA * intValueB;
+    default:
+      return;
+  }
+}
+
+function handleNumberClick(e) {
+  const clickedNum = e.target.innerText;
+  if (!firstDone) {
+    firstValue = firstValue + clickedNum;
+    result.innerHTML = firstValue;
   } else {
-    calculator.displayValue =
-      displayValue === `0` ? number : displayValue + number;
-    console.log(calculator);
+    secondValue = secondValue + clickedNum;
+    result.innerHTML = secondValue;
+    secondDone = true;
   }
 }
 
-function handleOperator(nextOperator) {
-  const firstOperand = calculator.firstOperand,
-    displayValue = calculator.displayValue,
-    operator = calculator.operator;
-
-  const inputValue = parseInt(displayValue, 10);
-
-  if (operator && calculator.waitingForSecondOperand) {
-    calculator.operator = nextOperator;
-    console.log(calculator);
-    return;
-  }
-
-  if (firstOperand === null && !isNaN(inputValue)) {
-    calculator.firstOperand = inputValue;
-  } else if (operator) {
-    const result = calculate(firstOperand, inputValue, operator);
-    calculator.displayValue = String(result);
-    calculator.firstOperand = result;
-  }
-  calculator.waitingForSecondOperand = true;
-  calculator.operator = nextOperator;
-  console.log(calculator);
+function calculate() {
+  const operation = doOperation();
+  result.innerHTML = operation;
+  firstValue = operation;
+  secondDone = false;
+  secondValue = "";
 }
 
-function calculate(firstOperand, secondOperand, operator) {
-  if (operator === `+`) {
-    return firstOperand + secondOperand;
-  } else if (operator === `-`) {
-    return firstOperand - secondOperand;
-  } else if (operator === `*`) {
-    return firstOperand * secondOperand;
-  } else if (operator === `/`) {
-    return firstOperand / secondOperand;
+function handleOperationClick(e) {
+  const clickedOperation = e.target.innerText;
+  if (!firstDone) {
+    firstDone = true;
   }
-
-  return secondOperand;
+  if (firstDone && secondDone) {
+    calculate();
+  }
+  currentOperation = clickedOperation;
 }
 
-function clear() {
-  calculator.displayValue = "0";
-  calculator.firstOperand = null;
-  calculator.waitingForSecondOperand = false;
-  calculator.operator = null;
-  console.log(calculator);
+function handleReset() {
+  firstValue = "";
+  secondValue = "";
+  firstDone = false;
+  secondDone = false;
+  currentOperation = null;
+  result.innerHTML = "0";
 }
 
-function updateScreen() {
-  const screen = document.querySelector(".screen");
-  screen.value = calculator.displayValue;
+function handleEqualsClick() {
+  if (firstDone && secondDone) {
+    calculate();
+  }
 }
-updateScreen();
 
-container.addEventListener("click", clickWhat);
-
-function clickWhat(e) {
-  const target = e.target;
-  if (!target.matches(`button`)) {
-    return;
-  }
-  if (target.classList.contains("operator")) {
-    handleOperator(target.value);
-    updateScreen();
-    return;
-  }
-  if (target.classList.contains(`clear`)) {
-    clear();
-    updateScreen();
-    return;
-  }
-
-  inputNumber(target.value);
-  updateScreen();
-}
+numbers.forEach(function (number) {
+  number.addEventListener("click", handleNumberClick);
+});
+operations.forEach(function (operation) {
+  operation.addEventListener("click", handleOperationClick);
+});
+reset.addEventListener("click", handleReset);
+equals.addEventListener("click", handleEqualsClick);
